@@ -2,9 +2,9 @@
 set -euo pipefail
 
 # === CONFIGURATION (modify as needed) =========================================
-REMOTE="datalab"
-REMOTE_ROOT=""         # under ~ on the remote
-LOCAL_ROOT="$HOME/deeprxn"    # under $HOME on the local
+REMOTE=""
+REMOTE_ROOT=""         	# under ~ on the remote
+LOCAL_ROOT="$HOME/"    	# under $HOME on the local
 
 
 # === DO NOT MODIFY BELOW THIS LINE ============================================
