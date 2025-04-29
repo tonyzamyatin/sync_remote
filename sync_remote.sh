@@ -15,18 +15,16 @@ PATTERNS=()
 
 usage() {
   cat <<EOF
-Usage: sync_remote (--pull | --push) --remote-sub <subdir> [--local-sub <subdir>] [PATTERN…]
+Usage: sync_remote (--pull | --push) [--remote-sub <subdir>] [--local-sub <subdir>] [PATTERN…]
   --pull         sync remote → local, requires --remote-sub
   --push         sync local → remote, requires --local-sub
-  --remote-sub   remote subdirectory under ~/$REMOTE_ROOT (required)
-  --local-sub    local subdirectory under $LOCAL_ROOT (optional;
-                 defaults to same as --remote-sub)
+  --remote-sub   remote subdirectory under ~/$REMOTE_ROOT (required when pulling, defaults to local-sub when pushing)
+  --local-sub    local subdirectory under $LOCAL_ROOT (required when pushing. defaults to remote-sub when pulling)
 
   PATTERN…       zero or more substrings to match in the remote dir.
                  • If you supply one or more PATTERNs, only matching
                    folders are rsynced.
-                 • If you supply NO PATTERNs, you’ll be propmted to rsync the *entire* 
-									 sub-directory.
+                 • If you supply NO PATTERNs, you’ll be propmted to rsync the *entire* sub-directory.
 
 EOF
   exit 1
