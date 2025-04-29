@@ -110,11 +110,13 @@ if (( ${#PATTERNS[@]} == 0 )); then
 	# determine which path is the source
   if [[ $DIRECTION == "pull" ]]; then
     SRC_DESC="remote ~/deeprxn/$REMOTE_SUB"
+		DST_DESC="local $LOCAL_DIR"
   else
     SRC_DESC="local  $LOCAL_DIR"
+    DST_DESC="remote ~/deeprxn/$REMOTE_SUB"
   fi
 
-  echo "📦 No filters specified — about to ${DIRECTION^^} entire source: $SRC_DESC"
+  echo "📦 No filters specified — about to ${DIRECTION^^} entire source: $SRC_DESC to $DST_DESC"
   read -r -p "Proceed? [Y/n] " ans
   ans=${ans:-Y}
   [[ $ans =~ ^[Yy]$ ]] || { echo "Aborted."; exit 0; }
