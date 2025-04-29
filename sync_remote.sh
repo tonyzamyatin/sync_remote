@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
+
+# === DO NOT MODIFY THIS FILE ============================================
 set -euo pipefail
 
-# === CONFIGURATION (modify as needed) =========================================
-REMOTE=""
-REMOTE_ROOT=""         	# under ~ on the remote
-LOCAL_ROOT="$HOME/"    	# under $HOME on the local
-
-
-# === DO NOT MODIFY BELOW THIS LINE ============================================
+source "$(dirname "$0")/config.sh"
 DIRECTION=""
 LOCAL_SUB=""                  # if empty ⇒ will be set to $REMOTE_SUB
 PATTERNS=()
