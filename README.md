@@ -7,10 +7,10 @@ A helper script to sync directories between your local machine and the remote ho
 Add an entry for your remote host (e.g. `datalab`) in your `~/.ssh/config`:
 
 ```ssh-config
-Host datalab
-  HostName cluster.datalab.tuwien.ac.at  # or your actual hostname
-  User your_username
-  IdentityFile ~/.ssh/id_rsa             # or your key path
+Host my_remote_host
+  HostName my.remote.host.name.com      # or your actual hostname
+  User my_user
+  IdentityFile ~/.ssh/id_rsa            # or your key path
 ```
 
 ## 2. Configure the Script
@@ -19,9 +19,9 @@ Edit the top of **sync_remote.sh** to match your setup:
 
 ```bash
 # === CONFIGURATION (modify as needed) ===
-REMOTE="datalab"
-REMOTE_ROOT="your_sync_project"        	 # under ~ on the remote
-LOCAL_ROOT="$HOME/your_local_project"    # under $HOME on the local
+REMOTE="my_remote_host"                  # same as in SSH config
+REMOTE_ROOT="my_remote_project"        	 # under ~ on the remote
+LOCAL_ROOT="$HOME/my_local_project"      # under $HOME on the local
 ```
 
 ## 3. (Optional) Create an Alias
@@ -41,7 +41,7 @@ source ~/.bashrc  # or source ~/.zshrc
 You can now run:
 
 ```bash
-sync_datalab --pull --remote-sub my/remote/subdir [--local-sub my/local/target/dir] [PATTERN...]
+sync_remote --pull --remote-sub my/remote/subdir [--local-sub my/local/target/dir] [PATTERN...]
 ```
 
 or
