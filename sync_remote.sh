@@ -5,7 +5,8 @@ set -euo pipefail
 
 source "$(dirname "$0")/config.sh"
 DIRECTION=""
-LOCAL_SUB=""                  # if empty ⇒ will be set to $REMOTE_SUB
+REMOTE_SUB=""
+LOCAL_SUB=""
 PATTERNS=()
 
 
@@ -14,8 +15,8 @@ usage() {
 Usage: sync_remote (--pull | --push) [--remote-sub <subdir>] [--local-sub <subdir>] [PATTERN…]
   --pull         sync remote → local, requires --remote-sub
   --push         sync local → remote, requires --local-sub
-  --remote-sub   remote subdirectory under ~/$REMOTE_ROOT (required when pulling, defaults to local-sub when pushing)
-  --local-sub    local subdirectory under $LOCAL_ROOT (required when pushing. defaults to remote-sub when pulling)
+  --remote-dir   remote subdirectory under ~/$REMOTE_ROOT (required when pulling, defaults to local-sub when pushing)
+  --local-dir    local subdirectory under $LOCAL_ROOT (required when pushing. defaults to remote-sub when pulling)
 
   PATTERN…       zero or more substrings to match in the remote dir.
                  • If you supply one or more PATTERNs, only matching
@@ -38,10 +39,10 @@ while [[ $# -gt 0 ]]; do
       [[ -z $DIRECTION ]] || { echo "❌ Cannot combine --pull and --push." >&2; usage; }
       DIRECTION="push"; shift
       ;;
-    --remote-sub)    REMOTE_SUB="$2";   shift 2 ;;
-    --remote-sub=*)  REMOTE_SUB="${1#*=}"; shift ;;
-    --local-sub)     LOCAL_SUB="$2";    shift 2 ;;
-    --local-sub=*)   LOCAL_SUB="${1#*=}"; shift ;;
+    --remote-dir)    REMOTE_SUB="$2";   shift 2 ;;
+    --remote-dir=*)  REMOTE_SUB="${1#*=}"; shift ;;
+    --local-dir)     LOCAL_SUB="$2";    shift 2 ;;
+    --local-dir=*)   LOCAL_SUB="${1#*=}"; shift ;;
     -h|--help)       usage ;;
     --) shift; break ;;
     -* ) echo "❌ Unknown option: $1" >&2; usage ;;
@@ -58,22 +59,22 @@ done
 
 if [[ $DIRECTION == "pull" ]]; then
   [[ -n $REMOTE_SUB ]] || {
-    echo "❌ --pull requires --remote-sub." >&2
+    echo "❌ --pull requires --remote-dir." >&2
     usage
   }
-  # default local-sub to remote-sub if unset
-  [[ -n $LOCAL_SUB ]] && : || LOCAL_SUB="$REMOTE_SUB"
+  # Default local-sub to remote-sub if unset
+  [[ -n $LOCAL_SUB ]] || LOCAL_SUB="$REMOTE_SUB"
 else
   [[ -n $LOCAL_SUB ]] || {
-    echo "❌ --push requires --local-sub." >&2
+    echo "❌ --push requires --local-dir." >&2
     usage
   }
-  # default remote-sub to local-sub if unset
-  [[ -n $REMOTE_SUB ]] && : || REMOTE_SUB="$LOCAL_SUB"
+  # Default remote-sub to local-sub if unset
+  [[ -n $REMOTE_SUB ]] || REMOTE_SUB="$LOCAL_SUB"
 fi
 
-REMOTE_DIR="$REMOTE_ROOT/$REMOTE_SUB"
-LOCAL_DIR="$LOCAL_ROOT/$LOCAL_SUB"
+REMOTE_DIR="${REMOTE_ROOT:+$REMOTE_ROOT/}$REMOTE_SUB"
+LOCAL_DIR="${LOCAL_ROOT:+$LOCAL_ROOT/}$LOCAL_SUB"
 mkdir -p "$LOCAL_DIR"
 
 # ─── Quick SSH check ────────────────────────────────────────────────────────────
@@ -105,11 +106,11 @@ fi
 if (( ${#PATTERNS[@]} == 0 )); then
 	# determine which path is the source
   if [[ $DIRECTION == "pull" ]]; then
-    SRC_DESC="remote ~/deeprxn/$REMOTE_SUB"
+    SRC_DESC="remote ~/$REMOTE_SUB"
 		DST_DESC="local $LOCAL_DIR"
   else
     SRC_DESC="local  $LOCAL_DIR"
-    DST_DESC="remote ~/deeprxn/$REMOTE_SUB"
+    DST_DESC="remote ~/$REMOTE_SUB"
   fi
 
   echo "📦 No filters specified — about to ${DIRECTION^^} entire source: $SRC_DESC to $DST_DESC"
